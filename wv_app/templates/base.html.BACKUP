@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WyeVisit</title>
+    <!-- CSS links -->
+</head>
+<body>
+    <header>
+        <!-- navbar -->
+        <nav>
+            <ul>
+                <li><a href="{% url 'show_attractions' %}">Attractions</a></li>
+                <li><a href="{% url 'show_users' %}">Users</a></li>
+                <li><a href="{% url 'show_profiles' %}">Profiles</a></li>
+                <li><a href="{% url 'show_categories' %}">Categories</a></li>
+                <li><a href="{% url 'show_reviews' %}">Reviews</a></li>
+                <li><a href="{% url 'show_user_preferences' %}">User Preferences</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        <!-- content taken from variables -->
+        {% endblock %}
+    </main>
+</body>
+</html>

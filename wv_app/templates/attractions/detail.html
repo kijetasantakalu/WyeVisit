@@ -1,0 +1,14 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ attraction.name }}</h2>
+{% if session %}
+<button type="button" class="btn btn-secondary">Save to Wishlist</button>
+{% endif %}
+<p><strong>Location:</strong> {{ attraction.location }}</p>
+<p>{{ attraction.description }}</p>
+{% if attraction.image_url %}
+    <img src="{{ attraction.image_url }}" alt="{{ attraction.name }}" width=900 height=700>
+{% endif %}
+{% endblock %}

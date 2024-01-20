@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .profiles-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    .profile-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin: 10px;
+        padding: 15px;
+        width: 300px;
+        text-align: center;
+        transition: box-shadow 0.3s;
+    }
+    .profile-card:hover {
+        box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+    }
+    .profile-name {
+        font-size: 1.2em;
+        margin-top: 10px;
+    }
+    .profile-details {
+        font-size: 0.9em;
+        color: #555;
+        margin-top: 10px;
+    }
+</style>
+
+<h1>User Profiles</h1>
+<div class="profiles-container">
+    {% for profile in profiles %}
+    <a href="{% url 'profile_detail' profile.id %}" >
+        <div class="profile-card">
+            <h2 class="profile-name">{{ profile.profile_name }}</h2>
+            <p class="profile-details">Trip Dates: {{ profile.trip_start_date }} to {{ profile.trip_end_date }}</p>
+            <!-- placeholder for later -->
+        </div>
+    </a>
+    {% empty %}
+    <p>No profiles found.</p>
+    {% endfor %}
+</div>
+{% endblock %}
