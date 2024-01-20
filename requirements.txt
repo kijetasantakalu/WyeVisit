@@ -1,0 +1,4 @@
+authlib==1.3.0
+django
+django-leaflet
+requests
