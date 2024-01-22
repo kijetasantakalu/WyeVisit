@@ -49,7 +49,7 @@ def search_attractions(request):
         results = Attraction.objects.filter(name__icontains=query)
     else:
         results = Attraction.objects.none()
-    return rendr(request,'search_attractions.html',{'results':results})
+    return render(request,'search_attractions.html',{'results':results})
 
 
 
