@@ -77,11 +77,18 @@
                             <a class="nav-link" href="{% url 'login' %}">Login</a>
                         </li>
                         {% endif %}
-                        
                     </ul>
                 </div>
-                    
             </div>
+            {% if session.userinfo.email_verified == False %}
+                <div class="container text-center mt-3">
+                    <div class="row">
+                        <div class="col">
+                            <p>Your account is not yet verified. Please verify your email to access all features.</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </nav>
     </header>
 
@@ -93,7 +100,7 @@
 
     <footer class="footer">
         <div class="container">
-            <span class="text-muted">A Computing Coursework Project. Version: Raglan</span>
+            <span class="text-muted">A Computing Coursework Project. Version: Abbey Dore</span>
         </div>
     </footer>
 
