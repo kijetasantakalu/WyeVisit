@@ -2,11 +2,24 @@
 
 {% block content %}
     <h2>Search Results</h2>
-    <ul>
+    <!-- <ul>
     {% for item in results %}
         <li>{{ item.name }}</li>  
     {% empty %}
         <li>No results found.</li>
     {% endfor %}
-    </ul>
+    </ul> -->
+    <div class="attractions-container">
+        {% for attraction in results %}
+        <a href="{% url 'attraction_detail' attraction.id %}" >
+            <div class="attraction-card">
+                <img src="{{ attraction.image_url }}" alt="{{ attraction.name }}" class="attraction-image">
+                <h2 class="attraction-name">{{ attraction.name }}</h2>
+                <p class="attraction-description">{{ attraction.description }}</p>
+                <!-- placeholder for later -->
+            </div>
+        </a>
+        {% empty %}
+        <p>No attractions found.</p>
+        {% endfor %}
 {% endblock %}
