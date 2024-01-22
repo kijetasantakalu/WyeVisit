@@ -15,6 +15,7 @@
             {% if session.userinfo.email_verified == False %}
             <div class="form-group">
                 <form action="https://login.auth0.com/api/v2/jobs/verification-email" method="post">
+                    {% csrf_token %}
                     <input hidden id="user_id" value={{session.userinfo.user_id}}>
                     <label>Please verify your email now to access all features.</label>
                     <button type="submit" formmethod="post">Resend Email Verification</button>
