@@ -42,7 +42,7 @@ def user_dashboard(request):
     return render(request, 'auth/user_dashboard.html')
 
 
-# search functionality
+# search functionality (This acts as the filter logic)
 def search_attractions(request):
     query = request.GET.get('search_query','')
     if query:

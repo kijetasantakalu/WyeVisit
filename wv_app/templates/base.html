@@ -47,6 +47,11 @@
                             <a class="nav-link" href="{% url 'suggest' %}">Suggest</a>
                         </li>
                         {% endif %}
+                        
+                    </ul>
+                </div>
+                <div class="ml-auto"> 
+                    <ul class="navbar-nav">
                         <li>
                             <form class="d-flex" role="search" method="GET">
                                 {% csrf_token %}
@@ -60,10 +65,6 @@
                                 <button class="btn btn-outline" href="{% url 'search_attractions' %}">Search</button>
                             </form>
                         </li>
-                    </ul>
-                </div>
-                <div class="ml-auto"> 
-                    <ul class="navbar-nav">
                         {% if session %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'user_dashboard' %}">User Dashboard ({{session.userinfo.name}})</a>
@@ -92,7 +93,7 @@
 
     <footer class="footer">
         <div class="container">
-            <span class="text-muted">A Computing Coursework Project. Version: Abergavenny</span>
+            <span class="text-muted">A Computing Coursework Project. Version: Raglan</span>
         </div>
     </footer>
 
