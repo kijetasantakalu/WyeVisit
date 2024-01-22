@@ -63,7 +63,7 @@
                                     name="search_query"
                                     required aria-label="Search"
                                     >
-                                    <button class="btn btn-outline" href="{% url 'search_attractions' %}">Search</button>
+                                    <button class="btn btn-outline" a="{% url 'search_attractions' %}">Search</button>
                                 </form>
                             </li>
                             {% if session %}
@@ -82,19 +82,20 @@
                     </div>
                 </div>
             </div>
-            {% if session.userinfo.email_verified == False %}
-                <div class="clearfix"></div>
-                <div class="row">
-                    <div class="container text-center mt-3">
-                        <div class="row">
-                            <div class="col">
-                                <p>Your account is not yet verified. Please verify your email to access all features.</p>
-                            </div>
+        </nav>
+        {% if session.userinfo.email_verified == False %}
+            <div class="clearfix"></div>
+            <div class="row">
+                <div class="container text-center mt-3">
+                    <div class="row">
+                        <div class="col">
+                            <p>Your account is not yet verified. Please verify your email to access all features.</p>
                         </div>
                     </div>
                 </div>
-            {% endif %}
-        </nav>
+            </div>
+        {% endif %}
+        
     </header>
 
     <main role="main" class="container">
@@ -105,7 +106,7 @@
 
     <footer class="footer">
         <div class="container">
-            <span class="text-muted">A Computing Coursework Project. Version: Pontrilas</span>
+            <span class="text-muted">A Computing Coursework Project. Version: Cwmbran</span>
         </div>
     </footer>
 
