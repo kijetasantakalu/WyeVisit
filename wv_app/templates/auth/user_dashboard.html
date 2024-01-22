@@ -12,6 +12,7 @@
         <form id="userProfileForm">
             <!-- Profile Picture -->
             <div class="form-group">
+                <img class="img-thumbnail" src={{session.userinfo.picture}}></img> 
                 <label for="profilePicture">Profile Picture</label>
                 <input type="file" class="form-control-file" id="profilePicture">
             </div>
@@ -25,7 +26,7 @@
             <!-- Email -->
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" class="form-control" id="email">
+                <input type="email" class="form-control" id="email" placeholder={{session.userinfo.email}} readonly>
             </div>
 
             <!-- Phone Number -->
