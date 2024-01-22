@@ -25,7 +25,7 @@ class Attraction(models.Model):
 class User(models.Model):
     username = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
-    auth_id = models.CharField(max_length=255) # Identifier from OAuth provider
+    auth_id = models.CharField(max_length=255) # Identifier from OAuth provider (called user_id)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -69,6 +69,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'wv_app.views.oauth_context_processor',
+                'wv_app.views.user_context_processor',
             ],
         },
     },
@@ -114,7 +115,7 @@ AUTH0_CALLBACK_URL = os.environ.get("AUTH0_CALLBACK_URL")
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-gb'
 
 TIME_ZONE = 'UTC'
 
@@ -136,6 +137,9 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+
+#CSRF prevents 403
+CSRF_TRUSTED_ORIGINS = ['https://*.wyevisit.onrender.com'] 
 
 #LEAFLET (&GDAL)
 # GDAL_LIBRARY_PATH = 'gdal-3.8.3'

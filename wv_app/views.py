@@ -28,9 +28,11 @@ def profile_detail(request, profile_id):
     profile = get_object_or_404(Profile, pk=profile_id)
     return render(request, 'profiles/detail.html', {'profile': profile})
 
-# Home page view
+# # Home page view
 def home(request):
     return render(request, 'home.html')
+# def home(request):
+#     return render(request, 'home.html')
 
 
 # This section is for the suggesting attractions view
@@ -78,6 +80,18 @@ def oauth_context_processor(request):
         'session': request.session.get("user")
     }
 
+
+def user_context_processor(request):
+    user = None
+    user_id = request.session.get('user', {}).get('user_id')
+    if user_id:
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            pass
+    return {
+        'user': user
+    }
 
 
 
