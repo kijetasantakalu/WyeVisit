@@ -34,53 +34,56 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'attraction_list' %}">Attractions</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'profile_list' %}">Profiles</a>
-                        </li>
-                        {% if session %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'suggest' %}">Suggest</a>
-                        </li>
-                        {% endif %}
-                        
-                    </ul>
-                </div>
-                <div class="ml-auto"> 
-                    <ul class="navbar-nav">
-                        <li>
-                            <form class="d-flex" role="search" method="GET">
-                                {% csrf_token %}
-                                <input
-                                class="form-control me-2"
-                                type="search"
-                                placeholder="Search"
-                                name="search_query"
-                                required aria-label="Search"
-                                >
-                                <button class="btn btn-outline" href="{% url 'search_attractions' %}">Search</button>
-                            </form>
-                        </li>
-                        {% if session %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_dashboard' %}">User Dashboard ({{session.userinfo.name}})</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">Login</a>
-                        </li>
-                        {% endif %}
-                    </ul>
+                <div class="row">
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'attraction_list' %}">Attractions</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'profile_list' %}">Profiles</a>
+                            </li>
+                            {% if session %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'suggest' %}">Suggest</a>
+                            </li>
+                            {% endif %}
+                            
+                        </ul>
+                    </div>
+                    <div class="ml-auto"> 
+                        <ul class="navbar-nav">
+                            <li>
+                                <form class="d-flex" role="search" method="GET">
+                                    {% csrf_token %}
+                                    <input
+                                    class="form-control me-2"
+                                    type="search"
+                                    placeholder="Search"
+                                    name="search_query"
+                                    required aria-label="Search"
+                                    >
+                                    <button class="btn btn-outline" href="{% url 'search_attractions' %}">Search</button>
+                                </form>
+                            </li>
+                            {% if session %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'user_dashboard' %}">User Dashboard ({{session.userinfo.name}})</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                            </li>
+                            {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'login' %}">Login</a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
             {% if session.userinfo.email_verified == False %}
+                <div class="clearfix"></div>
                 <div class="row">
                     <div class="container text-center mt-3">
                         <div class="row">
@@ -102,7 +105,7 @@
 
     <footer class="footer">
         <div class="container">
-            <span class="text-muted">A Computing Coursework Project. Version: Hereford</span>
+            <span class="text-muted">A Computing Coursework Project. Version: Pontrilas</span>
         </div>
     </footer>
 
