@@ -42,6 +42,18 @@ def user_dashboard(request):
     return render(request, 'auth/user_dashboard.html')
 
 
+# search functionality
+def search_attractions(request):
+    query = request.GET.get('search_query','')
+    if query:
+        results = Attraction.objects.filter(name__icontains=query)
+    else:
+        results = Attraction.objects.none()
+    return rendr(request,'search_attractions.html',{'results':results})
+
+
+
+
 
 
 #OAUTH
