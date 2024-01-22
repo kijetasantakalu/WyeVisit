@@ -46,7 +46,7 @@ def user_dashboard(request):
 def search_attractions(request):
     query = request.GET.get('search_query','')
     if query:
-        results = Attraction.objects.filter(name__icontains=query) | Attraction.objects.filter(description__icontains=query) | Attraction.objects.filter(tags__icontains=query)
+        results = Attraction.objects.filter(name__icontains=query) | Attraction.objects.filter(description__icontains=query) | Attraction.objects.filter(tags__name__icontains=query)
     else:
         results = Attraction.objects.none()
     return render(request,'search_attractions.html',{'results':results})
