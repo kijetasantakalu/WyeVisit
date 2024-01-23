@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Attraction, Profile, User
+from .models import Attraction, Profile, Account
 import json
 from authlib.integrations.django_client import OAuth
 from django.conf import settings
@@ -54,16 +54,16 @@ def search_attractions(request):
     return render(request,'search_attractions.html',{'results':results})
 
 
-# USERs
+# USERs (NOW CHANGED INTO ACCOUNTS)
 
-def update_user(request):
+def update_account(request):
     if request.method == 'POST':
-        user = request.user
+        account = request.account
         # user_profile = UserProfile.objects.get(user=user)  
 
         # Update user data
-        user.username = request.POST.get('username')
-        user.save()
+        account.username = request.POST.get('username')
+        account.save()
 
         # # Update profile data
         # user_profile.description = request.POST.get('description')
@@ -102,16 +102,16 @@ def oauth_context_processor(request):
     }
 
 
-def user_context_processor(request):
-    user = None
+def account_context_processor(request):
+    account = None
     user_id = request.session.get('user', {}).get('user_id')
     if user_id:
         try:
-            user = User.objects.get(auth_id=user_id)
-        except User.DoesNotExist:
+            account = Account.objects.get(auth_id=user_id)
+        except Account.DoesNotExist:
             pass
     return {
-        'user': user
+        'account': account
     }
 
 

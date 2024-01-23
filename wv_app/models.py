@@ -22,7 +22,7 @@ class Attraction(models.Model):
     def __str__(self):
         return self.name
 
-class User(models.Model):
+class Account(models.Model):
     username = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
     auth_id = models.CharField(max_length=255) # Identifier from OAuth provider (called user_id)
@@ -33,7 +33,7 @@ class User(models.Model):
         return self.username
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
     profile_name = models.CharField(max_length=255)
     trip_start_date = models.DateTimeField()
     trip_end_date = models.DateTimeField()
