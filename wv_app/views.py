@@ -75,9 +75,9 @@ def update_user(request):
 
         # user_profile.save()
 
-        return redirect('user_dashboard')  
+        return redirect('auth/user_dashboard')  
 
-    return render(request, 'user_dashboard.html')
+    return render(request, 'auth/user_dashboard.html')
 
 #OAUTH
 
