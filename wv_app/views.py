@@ -54,7 +54,21 @@ def search_attractions(request):
     return render(request,'search_attractions.html',{'results':results})
 
 
+# USERs
+def update_user(request):
+    if request.method == 'POST':
+        # Process form data here
+        profile = request.user.youruserprofilemodel  # Adjust according to your user profile model
+        profile.profile_picture = request.FILES.get('profilePicture')
+        profile.username = request.POST.get('username')
+        profile.description = request.POST.get('description')
+        # ... handle other fields ...
 
+        profile.save()
+
+        return redirect('some_view_name')  # Redirect to a success page or the same page
+
+    return render(request, 'your_template_name.html')  # Render the form template
 
 
 

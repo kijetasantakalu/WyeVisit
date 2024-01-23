@@ -9,26 +9,35 @@
 <body>
     <div class="container mt-5">
         <h2>User Dashboard</h2>
-        <form id="userProfileForm">
 
-            <!-- Email Verification -->
-            {% if session.userinfo.email_verified == False %}
-            <div class="form-group">
-                <form action="https://login.auth0.com/api/v2/jobs/verification-email" method="post">
-                    {% csrf_token %}
-                    <input hidden id="user_id" value={{session.userinfo.user_id}}>
-                    <label>Please verify your email now to access all features.</label>
-                    <button type="submit" formmethod="post">Resend Email Verification</button>
-                </form>
-            </div>
-            {% endif %}
 
+        <!-- Email Verification (This is now no longer within the main userProfileForm, for the sake of having a separate email verif button)-->
+        {% if session.userinfo.email_verified == False %}
+        <div class="form-group">
+            <form action="https://login.auth0.com/api/v2/jobs/verification-email" method="post">
+                {% csrf_token %}
+                <input hidden id="user_id" value={{session.userinfo.user_id}}>
+                <label>Please verify your email now to access all features.</label>
+                <button type="submit" formmethod="post" class="btn btn-primary">Resend Email Verification</button>
+            </form>
+        </div>
+        {% endif %}
+            
+            
+        <form id="userProfileForm" action="{% url 'update_user' %}" enctype="multipart/form-data">
+            {% csrf_token %}
             <!-- Profile Picture -->
             <div class="form-group">
                 <img class="img-thumbnail" src={{session.userinfo.picture}}></img> 
                 <label for="profilePicture">Profile Picture</label>
                 <input type="file" class="form-control-file" id="profilePicture">
             </div>
+
+            <!-- username -->
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" placeholder={{user.username}}>
+            </div>  
 
             <!-- Description -->
             <div class="form-group">
