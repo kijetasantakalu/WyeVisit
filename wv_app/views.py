@@ -55,22 +55,29 @@ def search_attractions(request):
 
 
 # USERs
+
 def update_user(request):
     if request.method == 'POST':
-        # Process form data here
-        profile = request.user.youruserprofilemodel  # Adjust according to your user profile model
-        profile.profile_picture = request.FILES.get('profilePicture')
-        profile.username = request.POST.get('username')
-        profile.description = request.POST.get('description')
-        # ... handle other fields ...
+        user = request.user
+        # user_profile = UserProfile.objects.get(user=user)  
 
-        profile.save()
+        # Update user data
+        user.username = request.POST.get('username')
+        user.save()
 
-        return redirect('some_view_name')  # Redirect to a success page or the same page
+        # # Update profile data
+        # user_profile.description = request.POST.get('description')
+        # user_profile.phone_number = request.POST.get('phoneNumber')  
+        # user_profile.location = request.POST.get('location')
+        
+        # if 'profilePicture' in request.FILES:
+        #     user_profile.profile_picture = request.FILES['profilePicture']
 
-    return render(request, 'your_template_name.html')  # Render the form template
+        # user_profile.save()
 
+        return redirect('user_dashboard')  
 
+    return render(request, 'user_dashboard.html')
 
 #OAUTH
 

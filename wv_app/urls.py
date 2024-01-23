@@ -14,6 +14,7 @@ urlpatterns = [
     path("auth/callback", views.callback, name="callback"),
     path("auth/user_dashboard", views.user_dashboard, name="user_dashboard"),
     path('search/', views.search_attractions, name='search_attractions'),
+    path('user/update/', update_user, name='update_user'),
 ]
 
 
