@@ -67,7 +67,7 @@ def update_account(request):
 
         # # Update profile data
         # user_profile.description = request.POST.get('description')
-        # user_profile.phone_number = request.POST.get('phoneNumber')  
+        user_profile.phone_number = request.POST.get('phoneNumber')  
         # user_profile.location = request.POST.get('location')
         
         # if 'profilePicture' in request.FILES:
@@ -153,3 +153,6 @@ def logout(request):
 #             "pretty": json.dumps(request.session.get("user"), indent=4),
 #         },
 #     )
+
+
+#IMGUR

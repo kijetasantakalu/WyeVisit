@@ -23,11 +23,16 @@ class Attraction(models.Model):
         return self.name
 
 class Account(models.Model):
+    is_active = models.BooleanField(blank=True,null=True,default=True)
     username = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
     auth_id = models.CharField(max_length=255) # Identifier from OAuth provider (called user_id)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    phone_number = models.CharField(max_length=255,blank=True,null=True)
+    profile_picture = models.CharField(max_length=255,null=True)
+    email_notifications = models.BooleanField(blank=True,null=True,default=True)
+
 
     def __str__(self):
         return self.username
