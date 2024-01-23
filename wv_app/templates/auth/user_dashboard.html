@@ -24,7 +24,7 @@
         {% endif %}
             
             
-        <form id="userProfileForm" action="{% url 'update_user' %}" enctype="multipart/form-data">
+        <form id="userProfileForm" action="{% url 'update_account' %}" enctype="multipart/form-data">
             {% csrf_token %}
             <!-- Profile Picture -->
             <div class="form-group">
@@ -36,7 +36,8 @@
             <!-- username -->
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" placeholder={{user.username}}>
+                <!-- <input type="text" class="form-control" id="username" placeholder={{user.username}}> -->
+                <input type="text" class="form-control" id="username" placeholder={{account.username}}>
             </div>  
 
             <!-- Description -->

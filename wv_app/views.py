@@ -104,7 +104,9 @@ def oauth_context_processor(request):
 
 def account_context_processor(request):
     account = None
-    user_id = request.session.get('user', {}).get('user_id')
+    # user_id = request.session.get("user").get('sub')
+    user_id = request.session.get("user").get('userinfo').get('sub')
+    print("USERID " + str(user_id))
     if user_id:
         try:
             account = Account.objects.get(auth_id=user_id)
