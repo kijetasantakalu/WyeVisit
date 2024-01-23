@@ -107,7 +107,7 @@ def user_context_processor(request):
     user_id = request.session.get('user', {}).get('user_id')
     if user_id:
         try:
-            user = User.objects.get(id=user_id)
+            user = User.objects.get(auth_id=user_id)
         except User.DoesNotExist:
             pass
     return {
