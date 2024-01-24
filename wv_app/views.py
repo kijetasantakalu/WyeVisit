@@ -6,6 +6,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render, redirect
 from django.urls import reverse
 from urllib.parse import quote_plus, urlencode
+from math import sqrt
 # from django.contrib.auth import authenticate, login, logout
 
 # View for listing all attractions
@@ -42,6 +43,9 @@ def suggest(request):
 
 def user_dashboard(request):
     return render(request, 'auth/user_dashboard.html')
+
+def new_profile(request):
+    return render(request, 'profiles/new_profile.html')
 
 
 # search functionality (This acts as the filter logic)
@@ -105,8 +109,11 @@ def oauth_context_processor(request):
 def account_context_processor(request):
     account = None
     # user_id = request.session.get("user").get('sub')
-    user_id = request.session.get("user").get('userinfo').get('sub')
-    print("USERID " + str(user_id))
+    try:
+        user_id = request.session.get("user").get('userinfo').get('sub')
+    except:
+        user_id = None
+    # print("USERID " + str(user_id))
     if user_id:
         try:
             account = Account.objects.get(auth_id=user_id)
@@ -115,6 +122,35 @@ def account_context_processor(request):
     return {
         'account': account
     }
+
+
+
+def calculate_score_distance(user_scores, attraction_scores):
+    return sqrt(sum((u - a) ** 2 for u, a in zip(user_scores, attraction_scores))) # euclidean distance (i think)
+
+
+def get_closest_attractions(profile_id):
+    if account == None:
+        return
+    attractions = Attraction.objects.all()
+
+    profile_scores = [profile.score1, profile.score2, profile.score3, profile.score4, profile.score5]
+
+    scored_attractions = []
+    for attraction in attractions:
+        attraction_scores = [attraction.score1, attraction.score2, attraction.score3, attraction.score4, attraction.score5]
+        distance = calculate_distance(user_scores, attraction_scores)
+        scored_attractions.append((attraction, distance))
+
+    # Sort attractions by their distance (ascending)
+    closest_attractions = sorted(scored_attractions, key=lambda x: x[1])
+
+    return closest_attractions
+
+def recommend_attractions(request):
+    pass
+    
+
 
 
 

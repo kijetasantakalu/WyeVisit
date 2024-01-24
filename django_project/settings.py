@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'wv_app',
     'leaflet',
+    'bootstrap_datepicker_plus',
 ]
 
 MIDDLEWARE = [

@@ -3,4 +3,5 @@ django
 django-leaflet
 requests
 GDAL==3.4.3
-
+django-bootstrap-datepicker-plus
+pandas

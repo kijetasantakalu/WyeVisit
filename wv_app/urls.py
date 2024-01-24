@@ -7,6 +7,7 @@ urlpatterns = [
     path('attractions/<int:attraction_id>/', views.attraction_detail, name='attraction_detail'),
     path('profiles/', views.profile_list, name='profile_list'),
     path('profiles/<int:profile_id>/', views.profile_detail, name='profile_detail'),
+    path('new_profile/',views.new_profile,name='new_profile'),
     path('suggest',views.suggest, name='suggest'),
     # path("", views.index, name="index"),
     path("auth/login", views.login, name="login"),

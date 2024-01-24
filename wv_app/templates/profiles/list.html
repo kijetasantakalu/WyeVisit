@@ -31,6 +31,7 @@
 </style>
 
 <h1>User Profiles</h1>
+<a class="btn btn-primary" href="{% url 'new_profile' %}">New Trip</a>
 <div class="profiles-container">
     {% for profile in profiles %}
     <a href="{% url 'profile_detail' profile.id %}" >
