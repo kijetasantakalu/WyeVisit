@@ -24,7 +24,18 @@
 {% leaflet_js %}
 {% leaflet_css %}
 
-    
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+
+
+
 </head>
 <body>
     <header>
@@ -39,10 +50,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'attraction_list' %}">Attractions</a>
                         </li>
+                        {% if session %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'profile_list' %}">Profiles</a>
                         </li>
-                        {% if session %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'suggest' %}">Suggest</a>
                         </li>
@@ -65,7 +76,13 @@
                                 <button class="btn btn-outline" type="submit">Search</button>
                             </form>
                         </li>
+
                         {% if session %}
+                        {% if account.current_profile %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'profile_detail' account.current_profile.id %}">Current Profile ({{account.current_profile.nickname}})</a>
+                        </li>
+                        {% endif %}
                         <li class="nav-item">
                             <!-- <a class="nav-link" href="{% url 'user_dashboard' %}">User Dashboard ({{session.userinfo.name}})</a> -->
                             <!-- <a class="nav-link" href="{% url 'user_dashboard' %}">Dashboard ({{user.username}})</a> -->
@@ -99,6 +116,17 @@
     </header>
 
     <main role="main" class="container">
+
+        {% comment %} {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %} {% endcomment %}
+
+
+
         {% block content %}
         <!-- content will go here -->
         {% endblock %}
@@ -106,28 +134,66 @@
 
     <footer class="footer">
         <div class="container">
-            <span class="text-muted">A Computing Coursework Project. Version: Llangybi </span>
+            <span class="text-muted">A Computing Coursework Project. Version: Caerleon </span>
         </div>
         <div>
             {{session.userinfo}}
         </div>
-        <div>
+        {% comment %} <div>
             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<!-- {{account}} -->
-        </div>
+        </div> {% endcomment %}
         <div>
             {{Account.objects}}
         </div>
     </footer>
 
-    <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
     <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
+
+    {% comment %} LEGACY, IGNORE ABOVE!!! {% endcomment %}
+    {% comment %}  moved to the top, in header.  {% endcomment %}
+
+
+
+
+
+{% if messages %}
+<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="messageModalLabel">Message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+$(document).ready(function() {
+    $('#messageModal').modal('show');
+});
+</script>
+{% endif %}
+
+
+
+
+
+
+
 
 
 

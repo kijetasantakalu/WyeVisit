@@ -7,7 +7,18 @@ from django.shortcuts import redirect, render, redirect
 from django.urls import reverse
 from urllib.parse import quote_plus, urlencode
 from math import sqrt
+from django.contrib import messages
+from .decorators import session_required
+from .utils import account_context_processor
 # from django.contrib.auth import authenticate, login, logout
+
+
+
+
+
+# modal view (deprecated)
+def modal_view(request, message):
+    return render(request, 'modal.html', {'message': message})
 
 # View for listing all attractions
 def attraction_list(request):
@@ -19,12 +30,20 @@ def attraction_detail(request, attraction_id):
     attraction = get_object_or_404(Attraction, pk=attraction_id)
     return render(request, 'attractions/detail.html', {'attraction': attraction})
 
+def recommendations_attractions(request):
+    attractions = recommend_attractions()
+    
+
 # View for listing all profiles
+@session_required
 def profile_list(request):
-    profiles = Profile.objects.all()
+    # profiles = Profile.objects.all()  
+    # profiles = account_context_processor(request).get('account').profiles.all() # This line doesnt work b/c accounts don't have profiles. profiles have accounts. this does mean it's less optimized but also less risk of error. 
+    profiles = Profile.objects.filter(account=account_context_processor(request).get('account'))
     return render(request, 'profiles/list.html', {'profiles': profiles})
 
 # Detailed view for a single profile
+@session_required
 def profile_detail(request, profile_id):
     profile = get_object_or_404(Profile, pk=profile_id)
     return render(request, 'profiles/detail.html', {'profile': profile})
@@ -37,15 +56,54 @@ def home(request):
 
 
 # This section is for the suggesting attractions view
+@session_required
 def suggest(request):
     return render(request, 'suggest.html')
 
 
+@session_required
 def user_dashboard(request):
     return render(request, 'auth/user_dashboard.html')
 
+@session_required
 def new_profile(request):
     return render(request, 'profiles/new_profile.html')
+
+@session_required
+def create_profile(request):
+    account = account_context_processor(request).get('account')
+    if request.method == 'POST':
+        profile = Profile()
+        profile.name = request.POST.get('name')
+        profile.description = request.POST.get('description')
+        profile.score1 = request.POST.get('score1')
+        profile.score2 = request.POST.get('score2')
+        profile.score3 = request.POST.get('score3')
+        profile.score4 = request.POST.get('score4')
+        profile.score5 = request.POST.get('score5')
+        profile.trip_start_date = request.POST.get('startDate') 
+        profile.trip_end_date = request.POST.get('endDate') 
+        profile.accommodation = request.POST.get('accommodation') 
+        profile.nickname = request.POST.get('nickname')
+        profile.account = account
+        profile.save()
+
+        account.current_profile = profile
+        account.save()
+
+        return redirect(f'/wv_app/profiles/{profile.id}')
+
+    # return render(request, 'profiles/new_profile.html', {'show_modal': True})
+    return render(request, 'profiles/new_profile.html')
+
+@session_required
+def add_to_wishlist(request, attraction_id):
+    attraction = get_object_or_404(Attraction, id=attraction_id)
+    # profile = Profile.objects.get(user=request.user)
+    profile = account_context_processor(request).get('account').current_profile
+    profile.wishlist.add(attraction)
+    return redirect('attraction_detail', attraction_id=attraction.id)
+#  CHECK!!!! IVE CHANGED SOMETHING!!! (now each account can have multiple profiles) (i think this is correct) (i hope so)
 
 
 # search functionality (This acts as the filter logic)
@@ -58,8 +116,35 @@ def search_attractions(request):
     return render(request,'search_attractions.html',{'results':results})
 
 
+@session_required
+def set_current_profile(request, profile_id):
+    account = account_context_processor(request).get('account')
+    profile = get_object_or_404(Profile, id=profile_id)
+    # account.current_profile = Profile.objects.get(id=profile_id)
+    if profile.account != account:
+        messages.error(request, 'This profile does not belong to you.')
+        return redirect('profile_list')
+    account.current_profile = profile
+    account.save()
+    messages.success(request, 'Profile successfully set.')
+    return redirect('profile_detail', profile_id=profile_id)
+
+
+@session_required
+def delete_profile(request, profile_id):
+    profile = get_object_or_404(Profile, id=profile_id)
+    
+    if profile.account == account_context_processor(request).get('account'):
+        profile.delete()
+        messages.success(request, 'Profile successfully deleted.')
+    else:
+        messages.error(request, 'This profile does not belong to you.')
+    
+    return redirect('profile_list')
+
 # USERs (NOW CHANGED INTO ACCOUNTS)
 
+@session_required
 def update_account(request):
     if request.method == 'POST':
         account = request.account
@@ -67,11 +152,10 @@ def update_account(request):
 
         # Update user data
         account.username = request.POST.get('username')
-        account.save()
 
         # # Update profile data
         # user_profile.description = request.POST.get('description')
-        user_profile.phone_number = request.POST.get('phoneNumber')  
+        account.phone_number = request.POST.get('phoneNumber')  
         # user_profile.location = request.POST.get('location')
         
         # if 'profilePicture' in request.FILES:
@@ -79,104 +163,52 @@ def update_account(request):
 
         # user_profile.save()
 
+        account.save()
+        messages.success(request, 'Profile successfully set.')
         return redirect('auth/user_dashboard')  
 
     return render(request, 'auth/user_dashboard.html')
+ 
+# #OAUTH
 
-#OAUTH
+# oauth = OAuth()
 
-oauth = OAuth()
-
-oauth.register(
-    "auth0",
-    client_id=settings.AUTH0_CLIENT_ID,
-    client_secret=settings.AUTH0_CLIENT_SECRET,
-    client_kwargs={
-        "scope": "openid profile email",
-    },
-    server_metadata_url=f"https://{settings.AUTH0_DOMAIN}/.well-known/openid-configuration",
-)
-
-
-
-# Adding oauth context to all requests (context processor)
-def oauth_context_processor(request):
-    return {
-        'session': request.session.get("user")
-    }
-
-
-def account_context_processor(request):
-    account = None
-    # user_id = request.session.get("user").get('sub')
-    try:
-        user_id = request.session.get("user").get('userinfo').get('sub')
-    except:
-        user_id = None
-    # print("USERID " + str(user_id))
-    if user_id:
-        try:
-            account = Account.objects.get(auth_id=user_id)
-        except Account.DoesNotExist:
-            pass
-    return {
-        'account': account
-    }
-
-
-
-def calculate_score_distance(user_scores, attraction_scores):
-    return sqrt(sum((u - a) ** 2 for u, a in zip(user_scores, attraction_scores))) # euclidean distance (i think)
-
-
-def get_closest_attractions(profile_id):
-    if account == None:
-        return
-    attractions = Attraction.objects.all()
-
-    profile_scores = [profile.score1, profile.score2, profile.score3, profile.score4, profile.score5]
-
-    scored_attractions = []
-    for attraction in attractions:
-        attraction_scores = [attraction.score1, attraction.score2, attraction.score3, attraction.score4, attraction.score5]
-        distance = calculate_distance(user_scores, attraction_scores)
-        scored_attractions.append((attraction, distance))
-
-    # Sort attractions by their distance (ascending)
-    closest_attractions = sorted(scored_attractions, key=lambda x: x[1])
-
-    return closest_attractions
-
-def recommend_attractions(request):
-    pass
-    
+# oauth.register(
+#     "auth0",
+#     client_id=settings.AUTH0_CLIENT_ID,
+#     client_secret=settings.AUTH0_CLIENT_SECRET,
+#     client_kwargs={
+#         "scope": "openid profile email",
+#     },
+#     server_metadata_url=f"https://{settings.AUTH0_DOMAIN}/.well-known/openid-configuration",
+# )
 
 
 
 
-def login(request):
-    return oauth.auth0.authorize_redirect(
-        request, request.build_absolute_uri(reverse("callback"))
-    )
+# def login(request):
+#     return oauth.auth0.authorize_redirect(
+#         request, request.build_absolute_uri(reverse("callback"))
+#     )
 
-def callback(request):
-    token = oauth.auth0.authorize_access_token(request)
-    request.session["user"] = token
-    return redirect(request.build_absolute_uri(reverse("home")))
+# def callback(request):
+#     token = oauth.auth0.authorize_access_token(request)
+#     request.session["user"] = token
+#     return redirect(request.build_absolute_uri(reverse("home")))
 
-def logout(request):
-    request.session.clear()
+# def logout(request):
+#     request.session.clear()
 
-    return redirect(
-        f"https://{settings.AUTH0_DOMAIN}/v2/logout?"
-        + urlencode(
-            {
-                "returnTo": request.build_absolute_uri(reverse("home")),
-                "client_id": settings.AUTH0_CLIENT_ID,
-            },
-            quote_via=quote_plus,
-        ),
-    )
+#     return redirect(
+#         f"https://{settings.AUTH0_DOMAIN}/v2/logout?"
+#         + urlencode(
+#             {
+#                 "returnTo": request.build_absolute_uri(reverse("home")),
+#                 "client_id": settings.AUTH0_CLIENT_ID,
+#             },
+#             quote_via=quote_plus,
+#         ),
+#     )
 
 
 # LEGACY (IGNORE)

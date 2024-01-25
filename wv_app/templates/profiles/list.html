@@ -2,6 +2,47 @@
 
 {% block content %}
 <style>
+    .profile-card {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    .profile-name {
+        font-size: 1.2em;
+        margin-top: 10px;
+    }
+    .profile-details {
+        font-size: 0.9em;
+        color: #555;
+        margin-top: 10px;
+    }
+    .current-profile {
+        font-weight: bold;
+    }
+</style>
+
+<h1>User Profiles</h1>
+<a class="btn btn-primary" href="{% url 'new_profile' %}">New Trip</a> 
+<div class="profiles-container">
+    {% for profile in profiles %}
+    <div class="profile-card">
+        <a href="{% url 'profile_detail' profile.id %}">
+            <h2 class="profile-name {% if account.current_profile == profile %}current-profile{% endif %}">{{ profile.nickname }}</h2>
+        </a>
+        <p class="profile-details">{{ profile.trip_start_date|date:"l, j F Y"  }} to {{ profile.trip_end_date|date:"l, j F Y"  }}</p>
+    </div>
+    {% empty %}
+    <p>No profiles found.</p>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+
+{% comment %} {% extends 'base.html' %}
+
+{% block content %}
+<style>
     .profiles-container {
         display: flex;
         flex-wrap: wrap;
@@ -45,4 +86,4 @@
     <p>No profiles found.</p>
     {% endfor %}
 </div>
-{% endblock %}
+{% endblock %} {% endcomment %}
