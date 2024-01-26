@@ -5,3 +5,8 @@ requests
 GDAL==3.4.3
 django-bootstrap-datepicker-plus
 pandas
+numpy
+django-crispy-forms 
+django-formtools 
+django-bootstrap4 
+django-floppyforms

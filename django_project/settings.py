@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'wv_app',
     'leaflet',
     'bootstrap_datepicker_plus',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -155,3 +156,6 @@ CSRF_TRUSTED_ORIGINS = ['https://*.wyevisit.onrender.com']
 # IMGUR_USERNAME = "kijetasantakalu"
 # IMGUR_ACCESS_TOKEN = "4be23979a7f1c69bfcb6ae89a1dbb3d2af4b06dd"
 # IMGUR_ACCESS_TOKEN_REFRESH = "a8d7f9ab1f50cccc2735b57b6bb86a1b52eb39de"
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
