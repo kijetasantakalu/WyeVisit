@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from . import utils
+from .utils import ResendVerificationEmailView
+
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -11,9 +13,13 @@ urlpatterns = [
     path('profiles/', views.profile_list, name='profile_list'),
     path('profiles/<int:profile_id>/', views.profile_detail, name='profile_detail'),
     path('profiles/<int:profile_id>/delete/', views.delete_profile, name='delete_profile'),
-    path('new_profile/',views.new_profile,name='new_profile'),
+    path('profiles/<int:profile_id>/edit/', views.edit_profile, name='edit_profile'),
+    path('new_profile/',views.new_profile,name='new_profile'),    
     path('create_profile/', views.create_profile, name='create_profile'),
     path('set_current_profile/<int:profile_id>/', views.set_current_profile, name='set_current_profile'),
+    path('wishlist/add/<int:attraction_id>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('wishlist/remove/<int:attraction_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
+    path('wishlist/view/', views.view_wishlist, name='view_wishlist'),
     path('suggest',views.suggest, name='suggest'),
     # path("", views.index, name="index"),
     # path("auth/login", views.login, name="login"),
@@ -23,6 +29,7 @@ urlpatterns = [
     path("auth/logout", utils.logout, name="logout"),
     path("auth/callback", utils.callback, name="callback"),   
     path("auth/user_dashboard", views.user_dashboard, name="user_dashboard"),
+    path('auth/resend_verification_email/', ResendVerificationEmailView.as_view(), name='resend_verification_email'),
     path('search/', views.search_attractions, name='search_attractions'),
     path('user/update/', views.update_account, name='update_account'), # name changed from user into account !!
 ]

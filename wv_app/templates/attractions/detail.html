@@ -3,12 +3,75 @@
 
 {% block content %}
 <h2>{{ attraction.name }}</h2>
-{% if session %}
+{% comment %} {% if session %}
 <button type="button" class="btn btn-secondary">Save to Wishlist</button>
+{% endif %} {% endcomment %}
+{% if session %}
+    {% if attraction in account.current_profile.wishlist.all %}
+        <form method="post" action="{% url 'remove_from_wishlist' attraction.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">Remove from Wishlist</button>
+        </form>
+    {% else %}
+        <form method="post" action="{% url 'add_to_wishlist' attraction.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary">Add to Wishlist</button>
+        </form>
+    {% endif %}
 {% endif %}
 <p><strong>Location:</strong> {{ attraction.location }}</p>
 <p>{{ attraction.description }}</p>
 {% if attraction.image_url %}
     <img src="{{ attraction.image_url }}" alt="{{ attraction.name }}" width=900 height=700>
 {% endif %}
+
+
+
+<div style="width: 400px; height: 400px;">
+    <canvas id="attraction_radar_graph"></canvas>
+</div>
+<script>
+var ctx = document.getElementById('attraction_radar_graph').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'radar',
+    data: {
+        labels: ['History', 'Outdoors', 'Physical Activity', 'Quirkiness', 'Price'],
+        datasets: [{
+            data: {{ scores|safe }},
+            backgroundColor: 'rgba(0, 123, 255, 0.5)',
+            borderColor: 'rgba(0, 123, 255, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        title: {
+            display: false
+        },
+        legend: {
+            display: false
+        },
+        tooltips: {
+            enabled: false
+        },
+        scale: {
+            ticks: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
 {% endblock %}

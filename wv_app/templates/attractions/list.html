@@ -35,6 +35,10 @@
         }
     </style>
 
+    
+    <a class="nav-link btn btn-secondary" href="{% url 'suggest' %}">Suggest a new attraction</a> </br>
+    <a class="nav-link btn btn-primary" href="{% url 'recommendations_attractions' %}">See your recommended attractions</a> </br>
+    
     <h1>Attractions</h1>
     <div class="attractions-container">
         {% for attraction in attractions %}

@@ -14,9 +14,12 @@
         <!-- Email Verification (This is now no longer within the main userProfileForm, for the sake of having a separate email verif button)-->
         {% if session.userinfo.email_verified == False %}
         <div class="form-group">
-            <form action="https://login.auth0.com/api/v2/jobs/verification-email" method="post">
+            {% comment %} <form action="https://login.auth0.com/api/v2/jobs/verification-email" method="post"> {% endcomment %}
+            <form action="{% url 'resend_verification_email' %}" method="post">
                 {% csrf_token %}
-                <input hidden id="user_id" value={{session.userinfo.user_id}}>
+                {% comment %} {{session.userinfo}} {% endcomment %}
+                <input hidden id="user_id" name="user_id" value="{{session.userinfo.sub}}">
+                {% comment %} <input hidden id="auth0_token" value={{auth0_management_api_token}}> {% endcomment %}
                 <label>Please verify your email now to access all features.</label>
                 <button type="submit" formmethod="post" class="btn btn-primary">Resend Email Verification</button>
             </form>

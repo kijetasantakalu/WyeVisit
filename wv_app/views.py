@@ -8,8 +8,11 @@ from django.urls import reverse
 from urllib.parse import quote_plus, urlencode
 from math import sqrt
 from django.contrib import messages
-from .decorators import session_required
+from .decorators import session_required, profile_required
 from .utils import account_context_processor
+from datetime import datetime
+from django.views.decorators.cache import never_cache
+from . import utils
 # from django.contrib.auth import authenticate, login, logout
 
 
@@ -20,21 +23,27 @@ from .utils import account_context_processor
 def modal_view(request, message):
     return render(request, 'modal.html', {'message': message})
 
-# View for listing all attractions
+# this is a view for listing all attractions (not recommendations nor wishlist, just everything. )
 def attraction_list(request):
     attractions = Attraction.objects.all()
     return render(request, 'attractions/list.html', {'attractions': attractions})
 
-# Detailed view for a single attraction
+# detailed view for a single attraction
 def attraction_detail(request, attraction_id):
     attraction = get_object_or_404(Attraction, pk=attraction_id)
-    return render(request, 'attractions/detail.html', {'attraction': attraction})
+    scores = [attraction.score_1, attraction.score_2, attraction.score_3, attraction.score_4, attraction.score_5]
+    return render(request, 'attractions/detail.html', {'attraction': attraction, 'scores': scores})
 
+@profile_required
+@session_required
 def recommendations_attractions(request):
-    attractions = recommend_attractions()
+    profile = account_context_processor(request).get('account').current_profile
+    recommended_attractions = utils.recommend_attractions(profile.id)
+    return render(request, 'attractions/recommendations.html', {'recommended_attractions': recommended_attractions})
+#NOTICE THAT THIS IS DIFFERENT FROM utils recommend_attractions (one shows the recommendations and the other processes the logic. )
     
 
-# View for listing all profiles
+# view for listing all profiles
 @session_required
 def profile_list(request):
     # profiles = Profile.objects.all()  
@@ -42,15 +51,46 @@ def profile_list(request):
     profiles = Profile.objects.filter(account=account_context_processor(request).get('account'))
     return render(request, 'profiles/list.html', {'profiles': profiles})
 
-# Detailed view for a single profile
+# detailed view for a single profile
 @session_required
 def profile_detail(request, profile_id):
     profile = get_object_or_404(Profile, pk=profile_id)
-    return render(request, 'profiles/detail.html', {'profile': profile})
+    duration = (profile.trip_end_date - profile.trip_start_date).days
+    wishlist = profile.wishlist.all()
+    scores = [profile.score_1, profile.score_2, profile.score_3, profile.score_4, profile.score_5]
+    if profile.account != account_context_processor(request).get('account'):
+        messages.error(request, 'You do not have permission to view this profile.')
+        return redirect('profile_detail', profile_id=profile_id)
+    
+    return render(request, 'profiles/detail.html', {'profile': profile, 'duration': duration, 'wishlist': wishlist, 'scores': scores})
+
+
+@session_required
+def edit_profile(request, profile_id):
+    profile = get_object_or_404(Profile, pk=profile_id)
+
+    if profile.account != account_context_processor(request).get('account'):
+        messages.error(request, 'You do not have permission to edit this profile.')
+        return redirect('profile_detail', profile_id=profile_id)
+
+    
+    trip_start_date = request.POST.get('trip_start_date')
+    trip_end_date = request.POST.get('trip_end_date')
+    nickname = request.POST.get('nickname')
+    profile.trip_start_date = trip_start_date
+    profile.trip_end_date = trip_end_date
+    profile.nickname = nickname
+    profile.save()
+
+    messages.success(request, 'Profile updated successfully.')
+    return redirect('profile_detail', profile_id=profile_id)
+
+
+
 
 # # Home page view
 def home(request):
-    return render(request, 'home.html')
+    return render(request, 'home.html') # note that there isn't any logic here b/c all of it is done in base.html (i.e. the logic for the home page is in base.html)
 # def home(request):
 #     return render(request, 'home.html')
 
@@ -96,14 +136,45 @@ def create_profile(request):
     # return render(request, 'profiles/new_profile.html', {'show_modal': True})
     return render(request, 'profiles/new_profile.html')
 
+@never_cache
+@profile_required
 @session_required
 def add_to_wishlist(request, attraction_id):
     attraction = get_object_or_404(Attraction, id=attraction_id)
     # profile = Profile.objects.get(user=request.user)
     profile = account_context_processor(request).get('account').current_profile
+    if profile.wishlist.filter(id=attraction.id).exists():
+        messages.warning(request, "Already in wishlist.")
+        return redirect('attraction_detail', attraction_id=attraction.id)
     profile.wishlist.add(attraction)
+    if profile.wishlist.filter(id=attraction.id).exists():
+        messages.success(request, "Added to wishlist successfully.")
+    else:
+        messages.error(request, "Failed to add to wishlist.")    
     return redirect('attraction_detail', attraction_id=attraction.id)
 #  CHECK!!!! IVE CHANGED SOMETHING!!! (now each account can have multiple profiles) (i think this is correct) (i hope so)
+
+@never_cache
+@profile_required
+@session_required
+def remove_from_wishlist(request, attraction_id):
+    attraction = get_object_or_404(Attraction, id=attraction_id)
+    profile = account_context_processor(request).get('account').current_profile
+    if not profile.wishlist.filter(id=attraction.id).exists():
+        messages.warning(request, "This is not in wishlist.")
+    profile.wishlist.remove(attraction)
+    if not profile.wishlist.filter(id=attraction.id).exists():
+        messages.success(request, "Removed from wishlist successfully.")
+    else:
+        messages.error(request, "Failed to remove from wishlist.")        
+    return redirect('attraction_detail', attraction_id=attraction.id)
+
+@profile_required
+@session_required
+def view_wishlist(request):
+    profile = account_context_processor(request).get('account').current_profile
+    attractions = profile.wishlist.all()
+    return render(request, 'attractions/list.html', {'attractions': attractions})
 
 
 # search functionality (This acts as the filter logic)

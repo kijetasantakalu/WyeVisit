@@ -29,7 +29,7 @@
         <a href="{% url 'profile_detail' profile.id %}">
             <h2 class="profile-name {% if account.current_profile == profile %}current-profile{% endif %}">{{ profile.nickname }}</h2>
         </a>
-        <p class="profile-details">{{ profile.trip_start_date|date:"l, j F Y"  }} to {{ profile.trip_end_date|date:"l, j F Y"  }}</p>
+        <p class="profile-details">{{ profile.trip_start_date|date:"l, j F Y"  }} to {{ profile.trip_end_date|date:"l, j F Y"  }} </p>
     </div>
     {% empty %}
     <p>No profiles found.</p>
