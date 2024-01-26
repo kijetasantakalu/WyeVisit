@@ -13,6 +13,7 @@ from .utils import account_context_processor
 from datetime import datetime
 from django.views.decorators.cache import never_cache
 from . import utils
+from .forms import OnboardingQuizForm
 # from django.contrib.auth import authenticate, login, logout
 
 
@@ -239,6 +240,47 @@ def update_account(request):
         return redirect('auth/user_dashboard')  
 
     return render(request, 'auth/user_dashboard.html')
+ 
+ 
+ 
+ 
+ 
+ 
+
+# ONBOARDING QUIZ
+
+@profile_required
+@session_required
+def onboarding_quiz(request):
+    if request.method == 'POST':
+        form = OnboardingQuizForm(request.POST)
+        if form.is_valid():
+            # this will now process the form and redirect
+            profile = account_context_processor(request).get('account').current_profile
+            profile.score_1 = form.cleaned_data['score_1']
+            profile.score_2 = form.cleaned_data['score_2']
+            profile.score_3 = form.cleaned_data['score_3']
+            profile.score_4 = form.cleaned_data['score_4']
+            profile.score_5 = form.cleaned_data['score_5']
+            profile.save()
+            messages.success(request, 'Onboarding quiz completed successfully.')
+            return redirect('home')
+    else:
+        form = OnboardingQuizForm()
+    return render(request, 'profiles/onboarding.html', {'form': form})
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
 # #OAUTH
 
